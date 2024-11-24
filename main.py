@@ -224,8 +224,6 @@ class Visual(QWidget):
         self.price_label.setText(f"Precio Total: ${self.precio_total:.2f}")
 
 
-
-
     def eliminarSandwich(self):
         """
         Elimina los sándwiches seleccionados de la orden.
@@ -244,10 +242,10 @@ class Visual(QWidget):
 
                 # Crear una representación completa del sándwich con sus adicionales
                 descripcion_sandwich = sandwich.getDescripcion()
-                detalles_adicionales = [adicional(sandwich).getDescripcion() for adicional in adicionales]
+                detalles_adicionales = [adicional.getDescripcion() for adicional in adicionales]
                 descripcion_completa = descripcion_sandwich + (" + " + " + ".join(detalles_adicionales) if detalles_adicionales else "")
                 
-                # Normalizamos el texto para hacer comparaciones más robustas
+                # Compara con el texto de la UI (sólo la descripción sin el precio)
                 if descripcion_completa.strip() == item.text().split(' PRECIO')[0].strip():
                     indices_to_remove.append(idx)
                     break
@@ -258,6 +256,8 @@ class Visual(QWidget):
 
         # Actualizamos la interfaz de la orden después de la eliminación
         self.actualizarOrden()
+
+
 
     def confirmarOrden(self):
         """
