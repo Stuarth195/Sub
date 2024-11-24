@@ -1,5 +1,3 @@
-import uuid
-
 class Sandwich:
     def __init__(self, tipo, tamaño):
         """
@@ -69,44 +67,51 @@ class Combo(Sandwich):
         """
         Un "Combo" es una combinación de dos tipos de sándwiches con el mismo tamaño.
         """
+        super().__init__("Combo", tamaño)
         self.tipo1 = tipo1
         self.tipo2 = tipo2
-        self.tamaño = tamaño
-        self.precio_base = self.calcularPrecioCombo(tipo1, tipo2, tamaño)
+        self.descuento = 10  # Descuento en porcentaje para el combo
+        self.precio_base = self.calcularPrecioCombo()
 
-    def calcularPrecioCombo(self, tipo1, tipo2, tamaño):
+    def calcularPrecioCombo(self):
         """
-        Calcula el precio del combo sumando los precios de los sándwiches individuales.
+        Calcula el precio del combo sumando los precios de los sándwiches individuales
+        y aplicando un descuento.
         """
-        # Creamos instancias de los sándwiches para obtener sus precios
-        sandwich1 = self.crearSandwich(tipo1, tamaño)
-        sandwich2 = self.crearSandwich(tipo2, tamaño)
+        # Creamos instancias de los sándwiches para calcular el precio combinado
+        sandwich1 = self.crearSandwich(self.tipo1, self.tamaño)
+        sandwich2 = self.crearSandwich(self.tipo2, self.tamaño)
 
-        # Sumamos los precios de los dos sándwiches
-        return sandwich1.getPrecio() + sandwich2.getPrecio()
+        # Precio combinado con descuento
+        precio_combinado = sandwich1.getPrecio() + sandwich2.getPrecio()
+        return precio_combinado * (1 - self.descuento / 100)
 
     def crearSandwich(self, tipo, tamaño):
-        self.descuento = 10
         """
         Crea una instancia de sándwich según el tipo y tamaño especificados.
         """
-        if tipo == "Pavo":
-            return Pavo(tamaño)
-        elif tipo == "Pollo":
-            return Pollo(tamaño)
-        elif tipo == "Beef":
-            return Beef(tamaño)
-        elif tipo == "Italiano":
-            return Italiano(tamaño)
-        elif tipo == "Veggie":
-            return Veggie(tamaño)
-        elif tipo == "Atún":
-            return Atun(tamaño)
-        else:
+        sandwich_clases = {
+            "Pavo": Pavo,
+            "Pollo": Pollo,
+            "Beef": Beef,
+            "Italiano": Italiano,
+            "Veggie": Veggie,
+            "Atún": Atun,
+        }
+
+        if tipo not in sandwich_clases:
             raise ValueError(f"Tipo de sándwich no reconocido: {tipo}")
 
+        return sandwich_clases[tipo](tamaño)
+
     def getDescripcion(self):
+        """
+        Devuelve la descripción del combo.
+        """
         return f"Combo: {self.tipo1} + {self.tipo2} ({self.tamaño} cm)"
 
     def getPrecio(self):
-        return self.precio_base - (self.precio_base * (self.descuento/100))
+        """
+        Devuelve el precio final del combo con descuento.
+        """
+        return self.precio_base
